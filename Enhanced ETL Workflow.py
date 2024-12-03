@@ -18,6 +18,7 @@ project_folder = os.path.dirname(os.path.abspath(__file__))
 log_file =os.path.join(project_folder, "Etl_log.txt")
 Extract_to =os.path.join(project_folder, "Extracted_data") # Folder where files will be extracted
 Output_file = os.path.join(project_folder, "Transformed_data.csv") #Transformed Csv File Path
+log_file_name=log_file.split("\\")[-1]
 
 url="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0221EN-SkillsNetwork/labs/module%206/Lab%20-%20Extract%20Transform%20Load/data/source.zip"
 
@@ -194,8 +195,16 @@ engine=sqlalchemy.create_engine(f"mysql+mysqlconnector://{MySql_User}:{MySql_Pas
 
 #
 df.to_sql('Enhanced_ETL', con=engine, if_exists='replace')
-
 log_progress(f" Transformed csv file uploaded to DMS {s3_object_name}")
+
+
+
+
+
+
+#Upload log file to s3 bucket
+s3_client.upload_file(log_file, bucket_name, log_file_name)
+log_progress("Log file uploaded to S3")
 
 
 # In log adding date for better understaing
